@@ -3,16 +3,23 @@ import Target from './Target.js';
 import './App.css';
 
 // Request data from Mobify's Target API
+var projectSlug = "lancome";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {};
+    this.retrieveTargetList = this.retrieveTargetList.bind(this);
   }
 
   componentDidMount() {
-    fetch('/api/projects/lancome/target/')
+    this.retrieveTargetList();
+  }
+
+  retrieveTargetList() {
+    const URL = `/api/projects/${projectSlug}/target/`;
+    fetch(URL)
     .then(response => response.json())
     .then(data => {
       console.log(data);

@@ -19,9 +19,26 @@ class App extends React.Component {
     this.retrieveTargetList();
   }
 
-  addDefaultTarget() {
+  addDefaultTarget(targetName, targetSlug) {
     const URL = `/api/projects/${projectSlug}/target/`;
-    console.log("I got called!");
+    const hostname = `https://${projectSlug}-${targetSlug}.mobify-storefront.com`;
+    const body = {
+      name: targetName,
+      slug: targetSlug,
+      ssr_external_hostname: hostname,
+      ssr_external_domain: 'mobify-storefront.com',
+      ssr_region: 'us-east-2'
+    };
+    console.log(`I got called with name of ${targetName} and ${targetSlug}!`);
+    fetch(URL, {
+      method: 'post',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(console.log("create target completed"))
+    .then(setTimeout(this.retrieveTargetList, 2000));
   }
 
   retrieveTargetList() {

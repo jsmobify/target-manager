@@ -13,3 +13,9 @@
 .c-target__icon {
     width: 40%;
 }
+
+.c-target__delete {
+    color: red;
+    font-weight: bold;
+    cursor: pointer;
+}

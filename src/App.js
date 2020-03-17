@@ -12,6 +12,7 @@ class App extends React.Component {
 
     this.state = {};
     this.retrieveTargetList = this.retrieveTargetList.bind(this);
+    this.deleteTarget = this.deleteTarget.bind(this);
     this.addDefaultTarget = this.addDefaultTarget.bind(this);
   }
 
@@ -41,6 +42,19 @@ class App extends React.Component {
     .then(setTimeout(this.retrieveTargetList, 2000));
   }
 
+  deleteTarget(targetSlug) {
+    console.log(`Delete target called with ${targetSlug}`);
+    let r = window.confirm("Press OK to delete this target");
+
+    if (r === true) {
+      const URL = `/api/projects/${projectSlug}/target/${targetSlug}/`
+      fetch(URL, {
+        method: 'delete'
+      }).then(console.log("delete target completed"))
+      .then(setTimeout(this.retrieveTargetList, 2000));
+    }
+  }
+
   retrieveTargetList() {
     const URL = `/api/projects/${projectSlug}/target/`;
     fetch(URL)
@@ -65,7 +79,10 @@ class App extends React.Component {
           this.state.results.map( (el) => {
             const link = `https://cloud.mobify.com/projects/${projectSlug}/publishing/${el.slug}/`;
             const d = new Date(el.current_deploy.bundle.created_at)
-            return <Target key={el.name} name={el.name} link={link} region={el.ssr_region} deploy={d.toLocaleString()} />
+            return <Target key={el.name} name={el.name} slug={el.slug}
+                      link={link} region={el.ssr_region} 
+                      cb={this.deleteTarget}
+                      deploy={d.toLocaleString()} />
           })
         }
       </div>

@@ -7,7 +7,7 @@ function Target(props) {
       <div className="c-target">
         <h1>{props.name}</h1>
         <p>{props.region}</p>
-        <img className="c-target__icon" src={storefront} alt="storefront icon" />
+        <a href={props.link}><img className="c-target__icon" src={storefront} alt="storefront icon" /></a>
         <p>Deployed at {props.deploy}</p>
       </div>
     );

@@ -12,6 +12,7 @@
     "react-scripts": "3.4.0"
   },
   "scripts": {
+    "proxy": "node proxy/app.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

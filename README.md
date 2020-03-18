@@ -1,18 +1,15 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Installation
-cd into the proxy folder and run npm install
+run npm install
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `npm run proxy`
-
-This sets up the proxy server needed to access the Target API. Please run this in its own terminal tab.
-
 ### `npm start`
 
+This spins up the proxy server first (listening on port 4000)
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 

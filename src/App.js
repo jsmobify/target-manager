@@ -39,7 +39,7 @@ class App extends React.Component {
       }
     })
     .then(console.log("create target completed"))
-    .then(setTimeout(this.retrieveTargetList, 2000));
+    .then(this.retrieveTargetList);
   }
 
   deleteTarget(targetSlug) {
@@ -51,13 +51,13 @@ class App extends React.Component {
       fetch(URL, {
         method: 'delete'
       }).then(console.log("delete target completed"))
-      .then(setTimeout(this.retrieveTargetList, 2000));
+      .then(this.retrieveTargetList);
     }
   }
 
   retrieveTargetList() {
     const URL = `/api/projects/${projectSlug}/target/`;
-    fetch(URL)
+    return fetch(URL)
     .then(response => response.json())
     .then(data => {
       console.log(data);

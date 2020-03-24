@@ -1,4 +1,7 @@
 import React from 'react';
+import Button from '@material-ui/core/Button';
+import Input from '@material-ui/core/Input';
+import Card from '@material-ui/core/Card';
 import './CreateTarget.css';
 
 class CreateTarget extends React.Component {
@@ -28,12 +31,12 @@ class CreateTarget extends React.Component {
 
     render() {
         return (
-        <div className="c-createTarget">
+        <Card className="c-createTarget">
             <h1>New Target</h1>
-            <input type="text" name="targetName" value={this.state.targetName} placeholder="Target Name" onChange={this.inputChange} />
-            <input type="text" name="targetSlug" value={this.state.targetSlug} placeholder="Target Slug" onChange={this.inputChange} />
-            <button type="button" value="Create" onClick={this.buttonClick}>Create</button>
-        </div>
+            <Input type="text" name="targetName" value={this.state.targetName} placeholder="Target Name" onChange={this.inputChange} />
+            <Input type="text" name="targetSlug" value={this.state.targetSlug} placeholder="Target Slug" onChange={this.inputChange} />
+            <Button value="Create" onClick={this.buttonClick}>Create</Button>
+        </Card>
         );
     }
   }

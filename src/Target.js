@@ -1,5 +1,7 @@
 import React from 'react';
-import storefront from './storefront.png';
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import StorefrontIcon from '@material-ui/icons/Storefront';
 import './Target.css';
 
 class Target extends React.Component {
@@ -16,13 +18,15 @@ class Target extends React.Component {
 
   render() {
     return (
-      <div className="c-target">
+      <Card className="c-target">
         <h1>{this.props.name}</h1>
         <p>{this.props.region}</p>
-        <a href={this.props.link}><img className="c-target__icon" src={storefront} alt="storefront icon" /></a>
+        <a href={this.props.link}>
+          <StorefrontIcon fontSize='large' color='primary' />
+        </a>
         <p>Deployed at {this.props.deploy}</p>
-        <p className="c-target__delete" onClick={this.buttonClick}>DELETE</p>
-      </div>
+        <Button className="c-target__delete" color="secondary" onClick={this.buttonClick}>DELETE</Button>
+      </Card>
     );
   }
 }

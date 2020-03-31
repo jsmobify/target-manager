@@ -1,44 +1,93 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import Input from '@material-ui/core/Input';
-import Card from '@material-ui/core/Card';
-import './CreateTarget.css';
+import Target from './Target.js';
+import CreateTarget from './CreateTarget.js';
+import './App.css';
 
-class CreateTarget extends React.Component {
+// Request data from Mobify's Target API
+var projectSlug = "jstest";
+
+class App extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-                        targetName: '',
-                        targetSlug: '', 
-                        click: props.cb 
-                     };
-
-        this.inputChange = this.inputChange.bind(this);
-        this.buttonClick = this.buttonClick.bind(this);
+        this.state = {};
+        this.retrieveTargetList = this.retrieveTargetList.bind(this);
+        this.deleteTarget = this.deleteTarget.bind(this);
+        this.addDefaultTarget = this.addDefaultTarget.bind(this);
     }
 
-    inputChange(e) {
-        this.setState({[e.target.name]: e.target.value});
+    componentDidMount() {
+        this.retrieveTargetList();
     }
 
-    buttonClick () {
-        if (this.state.targetName.length > 0 && this.state.targetSlug.length > 0) {
-            this.setState({targetName: '', targetSlug: ''});
-            this.state.click(this.state.targetName, this.state.targetSlug);
+    addDefaultTarget(targetName, targetSlug) {
+        const URL = `/api/projects/${projectSlug}/target/`;
+        const hostname = `https://${projectSlug}-${targetSlug}.mobify-storefront.com`;
+        const body = {
+            name: targetName,
+            slug: targetSlug,
+            ssr_external_hostname: hostname,
+            ssr_external_domain: 'mobify-storefront.com',
+            ssr_region: 'us-east-2'
+        };
+        console.log(`I got called with name of ${targetName} and slug of ${targetSlug}!`);
+        fetch(URL, {
+                method: 'post',
+                body: JSON.stringify(body),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(console.log("create target completed"))
+            .then(this.retrieveTargetList);
+    }
+
+    deleteTarget(targetSlug) {
+        console.log(`Delete target called with ${targetSlug}`);
+        let r = window.confirm("Press OK to delete this target");
+
+        if (r === true) {
+            const URL = `/api/projects/${projectSlug}/target/${targetSlug}/`
+            fetch(URL, {
+                    method: 'delete'
+                }).then(console.log("delete target completed"))
+                .then(this.retrieveTargetList);
         }
     }
 
+    retrieveTargetList() {
+        const URL = `/api/projects/${projectSlug}/target/`;
+        return fetch(URL)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                this.setState({
+                    results: data.results
+                });
+            })
+            .catch(err => console.log(err))
+    }
+
     render() {
-        return (
-        <Card className="c-createTarget">
-            <h1>New Target</h1>
-            <Input type="text" name="targetName" value={this.state.targetName} placeholder="Target Name" onChange={this.inputChange} />
-            <Input type="text" name="targetSlug" value={this.state.targetSlug} placeholder="Target Slug" onChange={this.inputChange} />
-            <Button value="Create" onClick={this.buttonClick}>Create</Button>
-        </Card>
+        return ( <
+            div className = "App" > {
+                this.state.results &&
+                <CreateTarget cb = {this.addDefaultTarget} />
+            }
+
+            {
+                this.state.results &&
+                    this.state.results.map((el) => {
+                        const link = `https://cloud.mobify.com/projects/${projectSlug}/publishing/${el.slug}/`;
+                        const d = new Date(el.current_deploy.bundle.created_at)
+                        return <Target key = {el.name} name = {el.name} slug = {el.slug} 
+                                link = {link} region = {el.ssr_region} 
+                                cb = {this.deleteTarget} 
+                                deploy = {d.toLocaleString()} />
+                    })
+            } </div>
         );
     }
-  }
-  
-  export default CreateTarget;
+}
+
+export default App;

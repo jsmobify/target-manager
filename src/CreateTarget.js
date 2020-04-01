@@ -8,9 +8,11 @@ const CreateTarget = (props) => {
     const [targetName, setTargetName] = useState('');
     const [targetSlug, setTargetSlug] = useState('');
 
+    const click = props.cb;
+
     const buttonClick = () => {
         if (targetName.length > 0 && targetSlug.length > 0) {
-            props.cb(targetName, targetSlug);
+            click(targetName, targetSlug);
             setTargetName('');
             setTargetSlug('');
         }

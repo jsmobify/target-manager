@@ -1,28 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Target from './Target.js';
 import CreateTarget from './CreateTarget.js';
 import './App.css';
 
-// Request data from Mobify's Target API
-var projectSlug = "jstest";
-
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-    this.retrieveTargetList = this.retrieveTargetList.bind(this);
-    this.deleteTarget = this.deleteTarget.bind(this);
-    this.addDefaultTarget = this.addDefaultTarget.bind(this);
+const App = () => {
+  const [projectSlug] = useState('jstest');
+  const [results, setResults] = useState('');
+  const [lastUpdated, setLastUpdated] = useState(new Date());
+  
+  const resetTimestamp = async () => { 
+    const d = new Date();
+    console.log(d.toUTCString);
+    setLastUpdated(d);
+    return;
   }
 
-  componentDidMount() {
-    this.retrieveTargetList();
-  }
-
-  addDefaultTarget(targetName, targetSlug) {
+  useEffect(() => {
     const URL = `/api/projects/${projectSlug}/target/`;
-    const hostname = `https://${projectSlug}-${targetSlug}.mobify-storefront.com`;
+    const retrieveTargets = async () => {
+      console.log ('retrieveTargets was called');
+
+      return fetch(URL)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        setResults(data.results);
+      })
+      .catch(err => console.log(err))
+    } 
+
+    retrieveTargets();
+  }, [projectSlug, lastUpdated]);
+
+  const addDefaultTarget = (targetName, targetSlug) => {
+    const URL = `/api/projects/${projectSlug}/target/`;
+    const hostname = `${projectSlug}-${targetSlug}.mobify-storefront.com`;
     const body = {
       name: targetName,
       slug: targetSlug,
@@ -30,7 +42,7 @@ class App extends React.Component {
       ssr_external_domain: 'mobify-storefront.com',
       ssr_region: 'us-east-2'
     };
-    console.log(`I got called with name of ${targetName} and ${targetSlug}!`);
+    console.log(`I got called with name of ${targetName} and slug of ${targetSlug}!`);
     fetch(URL, {
       method: 'post',
       body: JSON.stringify(body),
@@ -39,10 +51,10 @@ class App extends React.Component {
       }
     })
     .then(console.log("create target completed"))
-    .then(this.retrieveTargetList);
+    .then(resetTimestamp());
   }
 
-  deleteTarget(targetSlug) {
+  const deleteTarget = (targetSlug) => {
     console.log(`Delete target called with ${targetSlug}`);
     let r = window.confirm("Press OK to delete this target");
 
@@ -51,43 +63,30 @@ class App extends React.Component {
       fetch(URL, {
         method: 'delete'
       }).then(console.log("delete target completed"))
-      .then(this.retrieveTargetList);
+      .then(resetTimestamp());
     }
   }
 
-  retrieveTargetList() {
-    const URL = `/api/projects/${projectSlug}/target/`;
-    return fetch(URL)
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-      this.setState({results: data.results});
-    })
-    .catch(err => console.log(err))
-  }
+  return (
+    <div className="App">
+      { 
+        results && 
+        <CreateTarget cb={addDefaultTarget} />  
+      }
 
-  render() {
-    return (
-      <div className="App">
-        { 
-          this.state.results && 
-          <CreateTarget cb={this.addDefaultTarget} />  
-        }
-
-        {
-          this.state.results &&
-          this.state.results.map( (el) => {
-            const link = `https://cloud.mobify.com/projects/${projectSlug}/publishing/${el.slug}/`;
-            const d = new Date(el.current_deploy.bundle.created_at)
-            return <Target key={el.name} name={el.name} slug={el.slug}
-                      link={link} region={el.ssr_region} 
-                      cb={this.deleteTarget}
-                      deploy={d.toLocaleString()} />
-          })
-        }
-      </div>
-    );
-  }
+      {
+        results &&
+        results.map( (el) => {
+          const link = `https://cloud.mobify.com/projects/${projectSlug}/publishing/${el.slug}/`;
+          const d = new Date(el.current_deploy.bundle.created_at)
+          return <Target key={el.name} name={el.name} slug={el.slug}
+                    link={link} region={el.ssr_region} 
+                    cb={deleteTarget}
+                    deploy={d.toLocaleString()} />
+        })
+      }
+    </div>
+  );
 }
 
 export default App;

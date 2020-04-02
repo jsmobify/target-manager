@@ -3,35 +3,33 @@ import Target from './Target.js';
 import CreateTarget from './CreateTarget.js';
 import './App.css';
 
+const retrieveTargets = (projectSlug) => {
+  const URL = `/api/projects/${projectSlug}/target/`;
+  console.log ('retrieveTargets was called');
+
+  return fetch(URL)
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    return data.results;
+  })
+  .catch(err => console.log(err))
+} 
+
+
+
 const App = () => {
   const [projectSlug] = useState('jstest');
-  const [results, setResults] = useState('');
-  const [lastUpdated, setLastUpdated] = useState(new Date());
-  
-  const resetTimestamp = async () => { 
-    const d = new Date();
-    console.log(d.toUTCString);
-    setLastUpdated(d);
-    return;
-  }
+  const [results, setResults] = useState([]);
+  const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
-    const URL = `/api/projects/${projectSlug}/target/`;
-    const retrieveTargets = async () => {
-      console.log ('retrieveTargets was called');
-
-      return fetch(URL)
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        setResults(data.results);
-      })
-      .catch(err => console.log(err))
-    } 
-
-    retrieveTargets();
-  }, [projectSlug, lastUpdated]);
-
+    retrieveTargets(projectSlug)
+    .then((results) => {
+      setResults(results);
+    })
+  }, [projectSlug, refresh]);
+  
   const addDefaultTarget = (targetName, targetSlug) => {
     const URL = `/api/projects/${projectSlug}/target/`;
     const hostname = `${projectSlug}-${targetSlug}.mobify-storefront.com`;
@@ -51,7 +49,7 @@ const App = () => {
       }
     })
     .then(console.log("create target completed"))
-    .then(resetTimestamp());
+    .then(() => {setRefresh(refresh+1)});
   }
 
   const deleteTarget = (targetSlug) => {
@@ -62,20 +60,17 @@ const App = () => {
       const URL = `/api/projects/${projectSlug}/target/${targetSlug}/`
       fetch(URL, {
         method: 'delete'
-      }).then(console.log("delete target completed"))
-      .then(resetTimestamp());
+      })
+      .then(console.log("delete target completed"))
+      .then(() => {setRefresh(refresh+1)});
     }
   }
 
   return (
-    <div className="App">
-      { 
-        results && 
-        <CreateTarget cb={addDefaultTarget} />  
-      }
+    <div className="App"> 
+      <CreateTarget cb={addDefaultTarget} />  
 
       {
-        results &&
         results.map( (el) => {
           const link = `https://cloud.mobify.com/projects/${projectSlug}/publishing/${el.slug}/`;
           const d = new Date(el.current_deploy.bundle.created_at)

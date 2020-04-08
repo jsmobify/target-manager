@@ -21,14 +21,15 @@ const retrieveTargets = (projectSlug) => {
 const App = () => {
   const [projectSlug] = useState('jstest');
   const [results, setResults] = useState([]);
-  const [refresh, setRefresh] = useState(0);
 
-  useEffect(() => {
+  function updateResults() {
     retrieveTargets(projectSlug)
-    .then((results) => {
-      setResults(results);
-    })
-  }, [projectSlug, refresh]);
+      .then((results) => {
+        setResults(results);
+      })
+    }
+
+  useEffect(updateResults, [projectSlug]);
   
   const addDefaultTarget = (targetName, targetSlug) => {
     const URL = `/api/projects/${projectSlug}/target/`;
@@ -48,8 +49,8 @@ const App = () => {
         'Content-Type': 'application/json'
       }
     })
-    .then(console.log("create target completed"))
-    .then(() => {setRefresh(refresh+1)});
+    .then(() => console.log("create target completed"))
+    .then(updateResults);
   }
 
   const deleteTarget = (targetSlug) => {
@@ -61,8 +62,8 @@ const App = () => {
       fetch(URL, {
         method: 'delete'
       })
-      .then(console.log("delete target completed"))
-      .then(() => {setRefresh(refresh+1)});
+      .then(() => console.log("delete target completed"))
+      .then(updateResults);
     }
   }
 

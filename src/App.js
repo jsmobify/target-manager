@@ -31,7 +31,7 @@ const App = () => {
 
   useEffect(updateResults, [projectSlug]);
   
-  const addDefaultTarget = (targetName, targetSlug) => {
+  const addDefaultTarget = (targetName, targetSlug, targetRegion) => {
     const URL = `/api/projects/${projectSlug}/target/`;
     const hostname = `${projectSlug}-${targetSlug}.mobify-storefront.com`;
     const body = {
@@ -39,7 +39,7 @@ const App = () => {
       slug: targetSlug,
       ssr_external_hostname: hostname,
       ssr_external_domain: 'mobify-storefront.com',
-      ssr_region: 'us-east-2'
+      ssr_region: targetRegion
     };
     console.log(`I got called with name of ${targetName} and slug of ${targetSlug}!`);
     fetch(URL, {

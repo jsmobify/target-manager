@@ -15,9 +15,10 @@ const CreateTarget = (props) => {
 
     const buttonClick = () => {
         if (targetName.length > 0 && targetSlug.length > 0) {
-            click(targetName, targetSlug);
+            click(targetName, targetSlug, targetRegion);
             setTargetName('');
             setTargetSlug('');
+            setTargetRegion('us-east-2')
         }
     }
 

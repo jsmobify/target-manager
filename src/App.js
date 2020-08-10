@@ -1,35 +1,65 @@
 import React, { useState, useEffect } from 'react';
 import Target from './Target.js';
 import CreateTarget from './CreateTarget.js';
+import ProjectList from './ProjectList.js';
 import './App.css';
+
+const retrieveProjects = () => {
+  const URL = `/api/projects/`;
+  console.log ('retrieveProjects was called');
+
+  return fetch(URL)
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      return data.results;
+    })
+    .catch(err => console.log(err))
+}
 
 const retrieveTargets = (projectSlug) => {
   const URL = `/api/projects/${projectSlug}/target/`;
-  console.log ('retrieveTargets was called');
+  //console.log ('retrieveTargets was called');
 
   return fetch(URL)
-  .then(response => response.json())
-  .then(data => {
-    console.log(data);
-    return data.results;
-  })
-  .catch(err => console.log(err))
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      return data.results;
+    })
+    .catch(err => console.log(err))
 } 
 
 
 
 const App = () => {
-  const [projectSlug] = useState('jstest');
+  const [projects, setProjects] = useState([])
+  const [projectSlug, setProjectSlug] = useState();
   const [results, setResults] = useState([]);
 
-  function updateResults() {
-    retrieveTargets(projectSlug)
+  function updateProjects() {
+    retrieveProjects()
       .then((results) => {
-        setResults(results);
+        setProjects(results)
+      })
+  }
+
+  function updateResults() {
+    if (projectSlug) {
+      retrieveTargets(projectSlug)
+        .then((results) => {
+          setResults(results);
       })
     }
+  }
 
   useEffect(updateResults, [projectSlug]);
+
+  function updateProject(slug) {
+    setProjectSlug(slug)
+  }
+
+  useEffect(updateProjects, [])
   
   const addDefaultTarget = (targetName, targetSlug, targetRegion) => {
     const URL = `/api/projects/${projectSlug}/target/`;
@@ -69,7 +99,11 @@ const App = () => {
 
   return (
     <div className="App"> 
-      <CreateTarget cb={addDefaultTarget} />  
+      <ProjectList projects={projects} cb={updateProject} />
+      <div className="c-targetList">
+      { projectSlug &&
+        <CreateTarget cb={addDefaultTarget} />  
+      }
 
       {
         results.map( (el) => {
@@ -81,6 +115,7 @@ const App = () => {
                     deploy={d.toLocaleString()} />
         })
       }
+      </div>
     </div>
   );
 }

@@ -1,0 +1,6 @@
+.MuiList-root.c-projectList {
+    height: 100%;
+    position: fixed;
+    overflow-y: scroll;
+    width: 300px;
+}

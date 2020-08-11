@@ -7,10 +7,10 @@ import Card from '@material-ui/core/Card';
 import './CreateTarget.css';
 
 const CreateTarget = (props) => {
-    const [targetName, setTargetName] = useState('');
-    const [targetSlug, setTargetSlug] = useState('');
-    const [externalHostname, setHostNameSlug] = useState('');
-    const [externalDomain, setDomainSlug] = useState('');
+    const [targetName, setTargetName] = useState(props.name);
+    const [targetSlug, setTargetSlug] = useState(props.slug);
+    const [externalHostname, setHostNameSlug] = useState(props.hostname);
+    const [externalDomain, setDomainSlug] = useState(props.domain);
     const [ipWhitelist, setIpWhitelistSlug] = useState('');
     const [proxyConfigs, setProxyConfigsSlug] = useState('');
     const [targetRegion, setTargetRegion] = useState('us-east-2');

@@ -5,7 +5,7 @@ import './Project.css';
 const Project = (props) => {
     const buttonClick = () => {
         console.log(props.slug)
-        props.cb(props.slug);
+        props.cb(props.slug, props.name);
     };
 
     return (

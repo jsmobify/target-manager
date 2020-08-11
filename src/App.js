@@ -35,6 +35,7 @@ const retrieveTargets = (projectSlug) => {
 const App = () => {
   const [projects, setProjects] = useState([])
   const [projectSlug, setProjectSlug] = useState();
+  const [projectName, setProjectName] = useState();
   const [results, setResults] = useState([]);
 
   function updateProjects() {
@@ -55,7 +56,8 @@ const App = () => {
 
   useEffect(updateResults, [projectSlug]);
 
-  function updateProject(slug) {
+  function updateProject(slug, name) {
+    setProjectName(name)
     setProjectSlug(slug)
   }
 
@@ -107,20 +109,21 @@ const App = () => {
     <div className="App"> 
       <ProjectList projects={projects} cb={updateProject} />
       <div className="c-targetList">
-      { projectSlug &&
-        <CreateTarget cb={addDefaultTarget} />  
-      }
+        <h1>{projectName}</h1>
+        { projectSlug &&
+          <CreateTarget cb={addDefaultTarget} />  
+        }
 
-      {
-        results.map( (el) => {
-          const link = `https://cloud.mobify.com/projects/${projectSlug}/publishing/${el.slug}/`;
-          const d = new Date(el.current_deploy.bundle.created_at)
-          return <Target key={el.name} name={el.name} slug={el.slug}
-                    link={link} region={el.ssr_region} 
-                    cb={deleteTarget}
-                    deploy={d.toLocaleString()} />
-        })
-      }
+        {
+          results.map( (el) => {
+            const link = `https://cloud.mobify.com/projects/${projectSlug}/publishing/${el.slug}/`;
+            const d = new Date(el.current_deploy.bundle.created_at)
+            return <Target key={el.name} name={el.name} slug={el.slug}
+                      link={link} region={el.ssr_region} 
+                      cb={deleteTarget}
+                      deploy={d.toLocaleString()} />
+          })
+        }
       </div>
     </div>
   );

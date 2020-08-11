@@ -9,8 +9,8 @@ const Project = (props) => {
     };
 
     return (
-        <ListItem onClick={buttonClick}>
-            <h3>{props.name}</h3>
+        <ListItem className="c-projectTile" onClick={buttonClick}>
+            {props.name}
         </ListItem>
     );
 }

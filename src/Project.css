@@ -1,0 +1,11 @@
+.c-projectTile {
+    max-width: 240px;
+    background-color: white;
+    border-radius: 5px;
+    padding: 10px;
+    padding-top: 6px;
+    margin: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 1px 1px 1px rgba(128, 128, 128, 0.7);
+}

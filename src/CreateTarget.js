@@ -9,15 +9,23 @@ import './CreateTarget.css';
 const CreateTarget = (props) => {
     const [targetName, setTargetName] = useState('');
     const [targetSlug, setTargetSlug] = useState('');
+    const [externalHostname, setHostNameSlug] = useState('');
+    const [externalDomain, setDomainSlug] = useState('');
+    const [ipWhitelist, setIpWhitelistSlug] = useState('');
+    const [proxyConfigs, setProxyConfigsSlug] = useState('');
     const [targetRegion, setTargetRegion] = useState('us-east-2');
 
     const click = props.cb;
 
     const buttonClick = () => {
-        if (targetName.length > 0 && targetSlug.length > 0) {
-            click(targetName, targetSlug, targetRegion);
+        if (targetName.length > 0) {
+            click(targetName, targetSlug, externalHostname, externalDomain, ipWhitelist, proxyConfigs, targetRegion);
             setTargetName('');
             setTargetSlug('');
+            setHostNameSlug('');
+            setDomainSlug('');
+            setIpWhitelistSlug('');
+            setProxyConfigsSlug('');
             setTargetRegion('us-east-2')
         }
     }
@@ -29,6 +37,14 @@ const CreateTarget = (props) => {
                 onChange={(e) => setTargetName(e.target.value)} />
             <Input type="text" name="targetSlug" value={targetSlug} placeholder="Target Slug" 
                 onChange={(e) => setTargetSlug(e.target.value)} />
+            <Input type="text" name="external_hostname" value={externalHostname} placeholder="External Hostname" 
+                onChange={(e) => setHostNameSlug(e.target.value)} />
+            <Input type="text" name="external_domain" value={externalDomain} placeholder="External Domain" 
+                onChange={(e) => setDomainSlug(e.target.value)} />
+            <Input type="text" name="ip_whitelist" value={ipWhitelist} placeholder="IP Whitelist" 
+                onChange={(e) => setIpWhitelistSlug(e.target.value)} />
+            <Input type="text" name="proxy_configs" value={proxyConfigs} placeholder="Proxy Configs" 
+                onChange={(e) => setProxyConfigsSlug(e.target.value)} />
             <Select name="targetRegion" id="targetRegion" value={targetRegion}
                 onChange={(e) => setTargetRegion(e.target.value)}>
                 <MenuItem value="us-east-1" selected>US East (N. Virginia)</MenuItem>

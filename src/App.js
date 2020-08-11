@@ -61,16 +61,22 @@ const App = () => {
 
   useEffect(updateProjects, [])
   
-  const addDefaultTarget = (targetName, targetSlug, targetRegion) => {
+  const addDefaultTarget = (targetName, targetSlug, externalHostname, externalDomain, ipWhitelist, proxyConfigs, targetRegion) => {
     const URL = `/api/projects/${projectSlug}/target/`;
-    const hostname = `${projectSlug}-${targetSlug}.mobify-storefront.com`;
-    const body = {
+
+    let body = {
       name: targetName,
-      slug: targetSlug,
-      ssr_external_hostname: hostname,
-      ssr_external_domain: 'mobify-storefront.com',
-      ssr_region: targetRegion
+      ssr_whitelisted_ips: ipWhitelist,
+      ssr_proxy_configs: proxyConfigs,
+      ssr_region: targetRegion,
     };
+
+    Object.assign(body,
+      targetSlug.length > 0 ? {slug: targetSlug} : null,
+      externalHostname.length > 0 ? {ssr_external_hostname: externalHostname} : null,
+      externalDomain.length > 0 ? {ssr_external_domain: externalDomain} : null
+    )
+
     console.log(`I got called with name of ${targetName} and slug of ${targetSlug}!`);
     fetch(URL, {
       method: 'post',

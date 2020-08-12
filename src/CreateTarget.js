@@ -7,12 +7,12 @@ import Card from '@material-ui/core/Card';
 import './CreateTarget.css';
 
 const CreateTarget = (props) => {
-    const [targetName, setTargetName] = useState(props.name);
-    const [targetSlug, setTargetSlug] = useState(props.slug);
-    const [externalHostname, setHostNameSlug] = useState(props.hostname);
-    const [externalDomain, setDomainSlug] = useState(props.domain);
-    const [ipWhitelist, setIpWhitelistSlug] = useState('');
-    const [proxyConfigs, setProxyConfigsSlug] = useState('');
+    const [targetName, setTargetName] = useState(props.name || '');
+    const [targetSlug, setTargetSlug] = useState(props.slug || '');
+    const [externalHostname, setHostName] = useState(props.hostname || '');
+    const [externalDomain, setDomain] = useState(props.domain || '');
+    const [ipWhitelist, setIpWhitelist] = useState('');
+    const [proxyConfigs, setProxyConfigs] = useState('');
     const [targetRegion, setTargetRegion] = useState('us-east-2');
 
     const click = props.cb;
@@ -22,10 +22,10 @@ const CreateTarget = (props) => {
             click(targetName, targetSlug, externalHostname, externalDomain, ipWhitelist, proxyConfigs, targetRegion);
             setTargetName('');
             setTargetSlug('');
-            setHostNameSlug('');
-            setDomainSlug('');
-            setIpWhitelistSlug('');
-            setProxyConfigsSlug('');
+            setHostName('');
+            setDomain('');
+            setIpWhitelist('');
+            setProxyConfigs('');
             setTargetRegion('us-east-2')
         }
     }
@@ -38,13 +38,13 @@ const CreateTarget = (props) => {
             <Input type="text" name="targetSlug" value={targetSlug} placeholder="Target Slug" 
                 onChange={(e) => setTargetSlug(e.target.value)} />
             <Input type="text" name="external_hostname" value={externalHostname} placeholder="External Hostname" 
-                onChange={(e) => setHostNameSlug(e.target.value)} />
+                onChange={(e) => setHostName(e.target.value)} />
             <Input type="text" name="external_domain" value={externalDomain} placeholder="External Domain" 
-                onChange={(e) => setDomainSlug(e.target.value)} />
+                onChange={(e) => setDomain(e.target.value)} />
             <Input type="text" name="ip_whitelist" value={ipWhitelist} placeholder="IP Whitelist" 
-                onChange={(e) => setIpWhitelistSlug(e.target.value)} />
+                onChange={(e) => setIpWhitelist(e.target.value)} />
             <Input type="text" name="proxy_configs" value={proxyConfigs} placeholder="Proxy Configs" 
-                onChange={(e) => setProxyConfigsSlug(e.target.value)} />
+                onChange={(e) => setProxyConfigs(e.target.value)} />
             <Select name="targetRegion" id="targetRegion" value={targetRegion}
                 onChange={(e) => setTargetRegion(e.target.value)}>
                 <MenuItem value="us-east-1" selected>US East (N. Virginia)</MenuItem>

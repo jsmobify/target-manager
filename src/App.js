@@ -91,6 +91,30 @@ const App = () => {
     .then(updateResults);
   }
 
+  const updateTarget = (targetSlug, targetName, externalHostname, externalDomain, ipWhitelist, proxyConfigs) => {
+    const URL = `/api/projects/${projectSlug}/target/${targetSlug}/`;
+
+    let body = {};
+
+    Object.assign(body,
+      targetName.length > 0 ? {name: targetName} : null,
+      externalHostname.length > 0 ? {ssr_external_hostname: externalHostname} : null,
+      externalDomain.length > 0 ? {ssr_external_domain: externalDomain} : null,
+      ipWhitelist.length > 0 ? {ssr_whitelisted_ips: ipWhitelist} : null,
+      proxyConfigs.length > 0 ? {ssr_proxy_configs: proxyConfigs} : null
+    )
+
+    fetch(URL, {
+      method: 'patch',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(() => console.log(`Update target ${targetSlug} completed`))
+    .then(updateResults);
+  }
+
   const deleteTarget = (targetSlug) => {
     console.log(`Delete target called with ${targetSlug}`);
     let r = window.confirm("Press OK to delete this target");
@@ -103,6 +127,11 @@ const App = () => {
       .then(() => console.log("delete target completed"))
       .then(updateResults);
     }
+  }
+
+  const updateOrDelete = (type, ...args) => {
+    if (type === 'update') updateTarget(args);
+    else if (type === 'delete') deleteTarget(args);
   }
 
   return (
@@ -120,7 +149,7 @@ const App = () => {
             const d = new Date(el.current_deploy.bundle.created_at)
             return <Target key={el.name} name={el.name} slug={el.slug}
                       link={link} region={el.ssr_region} 
-                      cb={deleteTarget}
+                      cb={updateOrDelete}
                       deploy={d.toLocaleString()} />
           })
         }

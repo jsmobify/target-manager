@@ -5,8 +5,13 @@ import StorefrontIcon from '@material-ui/icons/Storefront';
 import './Target.css';
 
 const Target = (props) => {
-  const buttonClick = () => {
-    props.cb(props.slug);
+
+  const updateButtonClick = () => {
+    props.cb('update', props.slug);
+  };
+
+  const deleteButtonClick = () => {
+    props.cb('delete', props.slug);
   };
 
   return (
@@ -17,7 +22,8 @@ const Target = (props) => {
         <StorefrontIcon fontSize='large' color='primary' />
       </a>
       <p>Deployed at {props.deploy}</p>
-      <Button className="c-target__delete" color="secondary" onClick={buttonClick}>DELETE</Button>
+      <Button className="c-target__edit" color="secondary" onClick={updateButtonClick}>EDIT</Button>
+      <Button className="c-target__delete" color="secondary" onClick={deleteButtonClick}>DELETE</Button>
     </Card>
   );
 }

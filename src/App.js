@@ -91,6 +91,34 @@ const App = () => {
     .then(updateResults);
   }
 
+  const updateTarget = (targetName, targetSlug, externalHostname, externalDomain, ipWhitelist, proxyConfigs) => {
+    console.log(`Update target called with ${targetSlug}`);
+
+    const URL = `/api/projects/${projectSlug}/target/${targetSlug}/`;
+
+    let body = {};
+
+    Object.assign(body,
+      targetName && targetName.length > 0 ? {name: targetName} : null,
+      externalHostname && externalHostname.length > 0 ? {ssr_external_hostname: externalHostname} : null,
+      externalDomain && externalDomain.length > 0 ? {ssr_external_domain: externalDomain} : null,
+      ipWhitelist && ipWhitelist.length > 0 ? {ssr_whitelisted_ips: ipWhitelist} : null,
+      proxyConfigs && proxyConfigs.length > 0 ? {ssr_proxy_configs: proxyConfigs} : null
+    )
+
+    //console.log(JSON.stringify(body))
+
+    fetch(URL, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(() => console.log(`Update target ${targetSlug} completed`))
+    .then(updateResults);
+  }
+
   const deleteTarget = (targetSlug) => {
     console.log(`Delete target called with ${targetSlug}`);
     let r = window.confirm("Press OK to delete this target");
@@ -103,6 +131,12 @@ const App = () => {
       .then(() => console.log("delete target completed"))
       .then(updateResults);
     }
+  }
+
+  const updateOrDelete = (type, ...args) => {
+    //console.log(args)
+    if (type === 'update') updateTarget(...args);
+    else if (type === 'delete') deleteTarget(args);
   }
 
   return (
@@ -120,7 +154,11 @@ const App = () => {
             const d = new Date(el.current_deploy.bundle.created_at)
             return <Target key={el.name} name={el.name} slug={el.slug}
                       link={link} region={el.ssr_region} 
-                      cb={deleteTarget}
+                      external_hostname={el.ssr_external_hostname}
+                      external_domain={el.ssr_external_domain}
+                      whitelisted_ips={el.ssr_whitelisted_ips}
+                      proxy_config={el.ssr_proxy_config}
+                      cb={updateOrDelete}
                       deploy={d.toLocaleString()} />
           })
         }

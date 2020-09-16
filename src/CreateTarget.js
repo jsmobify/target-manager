@@ -36,7 +36,7 @@ const CreateTarget = (props) => {
             <Input type="text" name="targetName" value={targetName} placeholder="Target Name" 
                 onChange={(e) => setTargetName(e.target.value)} />
             <Input type="text" name="targetSlug" value={targetSlug} placeholder="Target Slug" 
-                onChange={(e) => setTargetSlug(e.target.value)} />
+                onChange={(e) => setTargetSlug(e.target.value.toLowerCase())} />
             <Input type="text" name="external_hostname" value={externalHostname} placeholder="External Hostname" 
                 onChange={(e) => setHostName(e.target.value)} />
             <Input type="text" name="external_domain" value={externalDomain} placeholder="External Domain" 

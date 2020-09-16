@@ -106,7 +106,7 @@ const App = () => {
       proxyConfigs && proxyConfigs.length > 0 ? {ssr_proxy_configs: proxyConfigs} : null
     )
 
-    console.log(JSON.stringify(body))
+    //console.log(JSON.stringify(body))
 
     fetch(URL, {
       method: 'PATCH',
@@ -134,7 +134,7 @@ const App = () => {
   }
 
   const updateOrDelete = (type, ...args) => {
-    console.log(args)
+    //console.log(args)
     if (type === 'update') updateTarget(...args);
     else if (type === 'delete') deleteTarget(args);
   }
